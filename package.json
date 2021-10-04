@@ -1,0 +1,30 @@
+{
+  "name": "package.json",
+  "version": "1.0.0",
+  "description": "NodeJS Global Mentoring Program Homeworks",
+  "main": "index.js",
+  "scripts": {
+    "task1": "node src/task1.js",
+    "task2": "node src/task2.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nargiz-m/NodeJS-Program.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nargiz-m/NodeJS-Program/issues"
+  },
+  "homepage": "https://github.com/nargiz-m/NodeJS-Program#readme",
+  "dependencies": {
+    "csvtojson": "^2.0.10",
+    "nodemon": "^2.0.13"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.15.7",
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.6"
+  }
+}
