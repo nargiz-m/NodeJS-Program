@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "NodeJS Global Mentoring Program Homeworks",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "task1": "node src/task1.js",
     "task2": "node src/task2.js",
