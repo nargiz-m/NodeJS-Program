@@ -29,14 +29,37 @@ userRouter.get('/users', (req, res) => {
 userRouter.get('/users/:id', (req, res) => {
     const { id } = req.params;
     const user = users.find(user => user.id == id)
-
+    if(!user) {
+        res.status(404).json({message: 'User not found'});
+    }
     res.json(user);
 });
 
-userRouter.post('/users', (req, res) => {
+userRouter.post('/users', validateSchema(schema), (req, res) => {
     const user = req.body;
-    console.log('user: ' + user)
-    const newUsers = [...users, user];
+    users.push(user);
+    res.json(users);
+});
 
-    res.json(newUsers);
-})
+userRouter.patch('/users/:id', validateSchema(schema), (req, res) => {
+    const { id } = req.params;
+    const user = users.find(user => user.id == id)
+    const updatedValues = req.body;
+    if(!user) {
+        res.status(404).json({message: 'User not found'});
+    }
+    for (var key in updatedValues) {
+        user[key] = updatedValues[key];
+    }
+    res.json(user);
+});
+
+userRouter.delete('/users/:id', (req, res) => {
+    const { id } = req.params;
+    const user = users.find(user => user.id == id)
+    if(!user) {
+        res.status(404).json({message: 'User not found'});
+    }
+    user.isDeleted = true;
+    res.json(user);
+});
