@@ -11,6 +11,27 @@ const users = [
         password: 'test1',
         age: 5,
         isDeleted: false
+    },
+    {
+        id: 2,
+        login: 'annaMars',
+        password: 'test1',
+        age: 18,
+        isDeleted: false
+    },
+    {
+        id: 3,
+        login: 'fredApples',
+        password: 'test1',
+        age: 40,
+        isDeleted: false
+    },
+    {
+        id: 4,
+        login: 'elenaApples',
+        password: 'test1',
+        age: 35,
+        isDeleted: false
     }
 ];
 
@@ -23,7 +44,14 @@ const schema = Joi.object().keys({
 });
 
 userRouter.get('/users', (req, res) => {
-    res.json(users);
+    const loginSubstring = req?.query?.loginSubstring;
+    const limit = req?.query?.limit;
+
+    let filteredUsers = users.sort((a, b) => (a.login > b.login) ? 1 : -1);
+    if(loginSubstring) filteredUsers = filteredUsers.filter(user => user.login.includes(loginSubstring));
+    if(limit) filteredUsers = filteredUsers.slice(0, limit);
+    
+    res.json(filteredUsers);
 });
 
 userRouter.get('/users/:id', (req, res) => {
