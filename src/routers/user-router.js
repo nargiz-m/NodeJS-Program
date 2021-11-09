@@ -1,72 +1,42 @@
 import Joi from "joi";
 import express from "express";
-import { validateSchema } from "./utils.js";
+import { validateSchema } from "../services/utils.js";
+import { createUser, getAutoSuggestUsers, getUserById } from "../services/UserService.js";
 
 export const userRouter = express.Router();
 
-const users = [
-    {
-        id: 1,
-        login: 'testUser',
-        password: 'test1',
-        age: 5,
-        isDeleted: false
-    },
-    {
-        id: 2,
-        login: 'annaMars',
-        password: 'test1',
-        age: 18,
-        isDeleted: false
-    },
-    {
-        id: 3,
-        login: 'fredApples',
-        password: 'test1',
-        age: 40,
-        isDeleted: false
-    },
-    {
-        id: 4,
-        login: 'elenaApples',
-        password: 'test1',
-        age: 35,
-        isDeleted: false
-    }
-];
-
 const schema = Joi.object().keys({
-    id: Joi.number().integer().required(),
     login: Joi.string().alphanum().min(3).max(30).required(),
     password: Joi.string().regex(/^(?=.*?\d)(?=.*?[a-zA-Z])[a-zA-Z\d]+$/).required(),
     age: Joi.number().integer().min(4).max(130).required(),
     isDeleted: Joi.boolean().required()
 });
 
-userRouter.get('/users', (req, res) => {
-    const loginSubstring = req?.query?.loginSubstring;
+userRouter.get('/users', async (req, res) => {
+    const loginSubstring = req?.query?.loginSubstring || '';
     const limit = req?.query?.limit;
 
-    let filteredUsers = users.sort((a, b) => (a.login > b.login) ? 1 : -1);
-    if(loginSubstring) filteredUsers = filteredUsers.filter(user => user.login.includes(loginSubstring));
-    if(limit) filteredUsers = filteredUsers.slice(0, limit);
-    
-    res.json(filteredUsers);
+    if(limit && !Number.isInteger(+limit)) {
+        res.status(400).json({message: 'Bad request'});
+    } else {
+        const users = await getAutoSuggestUsers(loginSubstring, limit);
+        res.json(users);
+    }
 });
 
-userRouter.get('/users/:id', (req, res) => {
+userRouter.get('/users/:id', async (req, res) => {
     const { id } = req.params;
-    const user = users.find(user => user.id == id)
+    const user = await getUserById(id);
     if(!user) {
         res.status(404).json({message: 'User not found'});
     }
     res.json(user);
 });
 
-userRouter.post('/users', validateSchema(schema), (req, res) => {
-    const user = req.body;
-    users.push(user);
-    res.json(users);
+userRouter.post('/users', validateSchema(schema), async (req, res) => {
+    const userData = req.body;
+    const user = await createUser(userData);
+    res.json(user);
 });
 
 userRouter.patch('/users/:id', validateSchema(schema), (req, res) => {
