@@ -1,7 +1,7 @@
 import Joi from "joi";
 import express from "express";
 import { validateSchema } from "../services/utils.js";
-import { createUser, getAutoSuggestUsers, getUserById } from "../services/UserService.js";
+import { createUser, getAutoSuggestUsers, getUserById, softDeleteUserById, updateUserById } from "../services/UserService.js";
 
 export const userRouter = express.Router();
 
@@ -39,25 +39,21 @@ userRouter.post('/users', validateSchema(schema), async (req, res) => {
     res.json(user);
 });
 
-userRouter.patch('/users/:id', validateSchema(schema), (req, res) => {
+userRouter.patch('/users/:id', validateSchema(schema), async (req, res) => {
     const { id } = req.params;
-    const user = users.find(user => user.id == id)
     const updatedValues = req.body;
-    if(!user) {
-        res.status(404).json({message: 'User not found'});
+    const userUpdated = await updateUserById(id, updatedValues);
+    if(userUpdated == 1) {
+        res.status(200).json({message: 'User was updated'});
     }
-    for (var key in updatedValues) {
-        user[key] = updatedValues[key];
-    }
-    res.json(user);
+    res.status(404).json({message: 'User not found'});
 });
 
-userRouter.delete('/users/:id', (req, res) => {
+userRouter.delete('/users/:id', async (req, res) => {
     const { id } = req.params;
-    const user = users.find(user => user.id == id)
-    if(!user) {
-        res.status(404).json({message: 'User not found'});
+    const userDeleted = await softDeleteUserById(id);
+    if(userDeleted == 1) {
+        res.status(200).json({message: 'User was deleted'});
     }
-    user.isDeleted = true;
-    res.json(user);
+    res.status(404).json({message: 'User not found'});
 });

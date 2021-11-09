@@ -38,3 +38,27 @@ export const createUser = async (userData) => {
         console.error("User creation error: ", error)
     }
 }
+
+export const updateUserById = async (userId, updatedData) => {
+    try {
+        const userUpdated = await User.update(
+            updatedData,
+            { where: { id: userId } }
+        );
+        return userUpdated;
+    } catch (error) {
+        console.error("User update error: ", error)
+    }
+}
+
+export const softDeleteUserById = async (userId) => {
+    try {
+        const userDeleted = await User.update(
+            { isDeleted: true},
+            { where: { id: userId } }
+        );
+        return userDeleted;
+    } catch (error) {
+        console.error("User delete error: ", error)
+    }
+}

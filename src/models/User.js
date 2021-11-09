@@ -1,6 +1,8 @@
+import dotenv from "dotenv";
 import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize('postgres://upodfjef:bWxGG-7XZyxYNkMBbgqXt7NNHwvedkmD@fanny.db.elephantsql.com/upodfjef')
+dotenv.config();
+const sequelize = new Sequelize(process.env.CONNECTION_URL)
 
 sequelize.authenticate()
   .then(() => console.log('Connection has been established successfully.'))
