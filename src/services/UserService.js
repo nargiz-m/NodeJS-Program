@@ -21,13 +21,12 @@ export const getAutoSuggestUsers = async (loginSubstring, limitVal) => {
 }
 
 export const getUserById = async (id) => {
-    let user = {};
     try {
-        user = await User.findByPk(id);
+        const user = await User.findByPk(id);
+        return user;
     } catch (error) {
         console.error("Get by id error: ", error)
     }
-    return user;
 }
 
 export const createUser = async (userData) => {
