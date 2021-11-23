@@ -2,6 +2,7 @@ import Joi from "joi";
 import express from "express";
 import { validateSchema } from "../services/utils.js";
 import { createUser, getAutoSuggestUsers, getUserById, softDeleteUserById, updateUserById } from "../services/UserService.js";
+import { deleteUserGroupsByUserId } from "../services/UserGroupService.js";
 
 export const userRouter = express.Router();
 
@@ -51,6 +52,7 @@ userRouter.patch('/users/:id', validateSchema(schema), async (req, res) => {
 
 userRouter.delete('/users/:id', async (req, res) => {
     const { id } = req.params;
+    await deleteUserGroupsByUserId(id);
     const userDeleted = await softDeleteUserById(id);
     if(userDeleted == 1) {
         res.status(200).json({message: 'User was deleted'});

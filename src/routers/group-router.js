@@ -1,5 +1,6 @@
 import express from 'express';
 import { getAllGroups, getGroupById, createGroup, updateGroupById, deleteGroupById } from '../services/GroupService.js';
+import { deleteUserGroupsByGroupId } from '../services/UserGroupService.js';
 
 export const groupRouter = express.Router();
 
@@ -38,6 +39,7 @@ groupRouter.patch('/groups/:id', async (req, res) => {
 
 groupRouter.delete('/groups/:id', async (req, res) => {
     const { id } = req.params;
+    await deleteUserGroupsByGroupId(id);
     const groupDeleted = await deleteGroupById(id);
     if(groupDeleted == 1) {
         res.status(200).json({message: 'Group was deleted'});

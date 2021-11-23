@@ -8,5 +8,5 @@ export const UserGroup = sequelize.define('usergroup', {
     user_id: Sequelize.INTEGER,
     group_id: Sequelize.INTEGER,
     },{
-        timestamps: false,
+    timestamps: false,
 });
