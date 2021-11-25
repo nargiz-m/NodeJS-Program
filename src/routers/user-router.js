@@ -1,17 +1,8 @@
-import Joi from "joi";
 import express from "express";
-import { validateSchema } from "../services/utils.js";
 import { createUser, getAutoSuggestUsers, getUserById, softDeleteUserById, updateUserById } from "../services/UserService.js";
 import { deleteUserGroupsByUserId } from "../services/UserGroupService.js";
 
 export const userRouter = express.Router();
-
-const schema = Joi.object().keys({
-    login: Joi.string().alphanum().min(3).max(30).required(),
-    password: Joi.string().regex(/^(?=.*?\d)(?=.*?[a-zA-Z])[a-zA-Z\d]+$/).required(),
-    age: Joi.number().integer().min(4).max(130).required(),
-    isDeleted: Joi.boolean().required()
-});
 
 userRouter.get('/users', async (req, res) => {
     const loginSubstring = req?.query?.loginSubstring || '';
@@ -34,13 +25,16 @@ userRouter.get('/users/:id', async (req, res) => {
     res.json(user);
 });
 
-userRouter.post('/users', validateSchema(schema), async (req, res) => {
+userRouter.post('/users', async (req, res) => {
     const userData = req.body;
     const user = await createUser(userData);
+    if(!user) {
+        res.status(400).json({message: 'Bad request'});
+    }
     res.json(user);
 });
 
-userRouter.patch('/users/:id', validateSchema(schema), async (req, res) => {
+userRouter.patch('/users/:id', async (req, res) => {
     const { id } = req.params;
     const updatedValues = req.body;
     const userUpdated = await updateUserById(id, updatedValues);

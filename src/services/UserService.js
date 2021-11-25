@@ -34,6 +34,9 @@ export const createUser = async (userData) => {
         const user = await User.create(userData);
         return user;
     } catch (error) {
+        if(error instanceof Sequelize.ValidationError){
+            return console.error( 'Captured validation error: ', error.errors[0].message);
+        }
         console.error("User creation error: ", error)
     }
 }
