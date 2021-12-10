@@ -1,6 +1,7 @@
 import { UserGroup } from "../models/UserGroup.js";
 import dotenv from "dotenv";
 import { Sequelize } from "sequelize";
+import { winstonInstance } from '../helpers/winston-logger.js'
 
 dotenv.config();
 const sequelize = new Sequelize(process.env.CONNECTION_URL);
@@ -9,7 +10,7 @@ export const getAllUserGroups = async () => {
     try {
         return await UserGroup.findAll();
     } catch (error) {
-        console.error('Get User-Group relationsips error: ', error);
+        winstonInstance.error(`getAllUserGroups method error: ${error.errors[0].message}`);
     }
 };
 
@@ -18,7 +19,7 @@ export const deleteUserGroupsByGroupId = async (groupId) => {
         const userGroupDeleted = await UserGroup.destroy({ where: { group_id: groupId } });
         return userGroupDeleted;
     } catch (error) {
-        console.error('User-Group by group deletion error: ', error);
+        winstonInstance.error(`deleteUserGroupsByGroupId method error with passed groupId = ${groupId}: ${error.errors[0].message}`);
     }
 };
 
@@ -27,7 +28,7 @@ export const deleteUserGroupsByUserId = async (userId) => {
         const userGroupDeleted = await UserGroup.destroy({ where: { user_id: userId } });
         return userGroupDeleted;
     } catch (error) {
-        console.error('User-Group by user deletion error: ', error);
+        winstonInstance.error(`deleteUserGroupsByUserId method error with passed userId = ${userId}: ${error.errors[0].message}`);
     }
 };
 
@@ -49,6 +50,6 @@ export const addUsersToGroup = async (groupId, userIds) => {
         return usergroups;
     } catch (error) {
         await t.rollback();
-        console.error('Adding Users to Group error: ', error);
+        winstonInstance.error(`addUsersToGroup method error with passed groupId = ${groupId} and userIds = ${userIds}: ${error.errors[0].message}`);
     }
 }

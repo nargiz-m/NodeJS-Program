@@ -1,10 +1,11 @@
 import { Group } from "../models/Group.js";
+import { winstonInstance } from "../helpers/winston-logger.js";
 
 export const getAllGroups = async () => {
     try {
         return await Group.findAll();
     } catch (error) {
-        console.error("Get all groups error: ", error);
+        winstonInstance.error(`getAllGroups method error: ${error.errors[0].message}`);
     }
 };
 
@@ -13,7 +14,7 @@ export const getGroupById = async (groupId) => {
         const group = await Group.findByPk(groupId);
         return group;
     } catch (error) {
-        console.error("Get group by id error: ", error);
+        winstonInstance.error(`getGroupById method error with passed groupId = ${groupId}: ${error.errors[0].message}`);
     }
 };
 
@@ -22,7 +23,7 @@ export const createGroup = async (groupBody) => {
         const groupCreated = await Group.create(groupBody);
         return groupCreated;
     } catch (error) {
-        console.error("Create group error: ", error);
+        winstonInstance.error(`createGroup method error with passed groupBody = ${groupBody}: ${error.errors[0].message}`);
     }
 };
 
@@ -34,7 +35,7 @@ export const updateGroupById = async (groupId, updatedValues) => {
         );
         return groupUpdated;
     } catch (error) {
-        console.error("Update group by id error: ", error);
+        winstonInstance.error(`updateGroupById method error with passed groupId = ${groupId} and updatedValues = ${updatedValues}: ${error.errors[0].message}`);
     }
 };
 
@@ -43,6 +44,6 @@ export const deleteGroupById = async (groupId) => {
         const groupDeleted = await Group.destroy({ where: { id: groupId } });
         return groupDeleted;
     } catch (error) {
-        console.error("Delete group by id error: ", error);
+        winstonInstance.error(`deleteGroupById method error with passed groupId = ${groupId}: ${error.errors[0].message}`);
     }
 };
