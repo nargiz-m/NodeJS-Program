@@ -1,22 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
-import winston from 'winston';
 import expressWinston from 'express-winston';
 import { userRouter } from "./routers/user-router.js";
 import { groupRouter } from "./routers/group-router.js";
 import { userGroupRouter } from "./routers/usergroup-router.js";
-
-const winstonInstance = winston.createLogger({
-    transports: new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.timestamp({format: 'DD-MMM-YYYY HH:mm:ss'}),
-        winston.format.printf(
-         info => `${info.timestamp} ${info.level}: ${info.message}`
-        )
-      )
-    })
-});
+import { winstonInstance } from "./helpers/winston-logger.js"
 
 dotenv.config();
 const app = express();
