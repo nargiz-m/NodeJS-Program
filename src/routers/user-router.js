@@ -1,10 +1,11 @@
 import express from "express";
 import { createUser, getAutoSuggestUsers, getUserById, softDeleteUserById, updateUserById } from "../services/UserService.js";
 import { deleteUserGroupsByUserId } from "../services/UserGroupService.js";
+import { authenticationFunction } from '../helpers/authentication.js';
 
 export const userRouter = express.Router();
 
-userRouter.get('/users', async (req, res) => {
+userRouter.get('/users', authenticationFunction, async (req, res) => {
     const loginSubstring = req?.query?.loginSubstring || '';
     const limit = req?.query?.limit;
 
@@ -16,7 +17,7 @@ userRouter.get('/users', async (req, res) => {
     }
 });
 
-userRouter.get('/users/:id', async (req, res) => {
+userRouter.get('/users/:id', authenticationFunction, async (req, res) => {
     const { id } = req.params;
     const user = await getUserById(id);
     if(!user) {
@@ -25,7 +26,7 @@ userRouter.get('/users/:id', async (req, res) => {
     res.json(user);
 });
 
-userRouter.post('/users', async (req, res) => {
+userRouter.post('/users', authenticationFunction, async (req, res) => {
     const userData = req.body;
     const user = await createUser(userData);
     if(!user) {
@@ -34,7 +35,7 @@ userRouter.post('/users', async (req, res) => {
     res.json(user);
 });
 
-userRouter.patch('/users/:id', async (req, res) => {
+userRouter.patch('/users/:id', authenticationFunction, async (req, res) => {
     const { id } = req.params;
     const updatedValues = req.body;
     const userUpdated = await updateUserById(id, updatedValues);
@@ -44,7 +45,7 @@ userRouter.patch('/users/:id', async (req, res) => {
     res.status(404).json({message: 'User not found'});
 });
 
-userRouter.delete('/users/:id', async (req, res) => {
+userRouter.delete('/users/:id', authenticationFunction, async (req, res) => {
     const { id } = req.params;
     await deleteUserGroupsByUserId(id);
     const userDeleted = await softDeleteUserById(id);

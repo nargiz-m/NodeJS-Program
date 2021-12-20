@@ -7,7 +7,7 @@
   "scripts": {
     "task1": "node src/task1.js",
     "task2": "node src/task2.js",
-    "express-server": "node src/app.js",
+    "express-server": "node --experimental-json-modules src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,11 +22,13 @@
   "homepage": "https://github.com/nargiz-m/NodeJS-Program#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "csvtojson": "^2.0.10",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-winston": "^2.6.0",
     "joi": "^17.4.2",
+    "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "nodemon": "^2.0.13",
     "passport": "^0.5.2",

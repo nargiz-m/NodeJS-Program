@@ -1,15 +1,16 @@
 import express from 'express';
 import { getAllGroups, getGroupById, createGroup, updateGroupById, deleteGroupById } from '../services/GroupService.js';
 import { deleteUserGroupsByGroupId } from '../services/UserGroupService.js';
+import { authenticationFunction } from '../helpers/authentication.js';
 
 export const groupRouter = express.Router();
 
-groupRouter.get('/groups', async (req, res) => {
+groupRouter.get('/groups', authenticationFunction, async (req, res) => {
     const groups = await getAllGroups();
     res.json(groups);
 });
 
-groupRouter.get('/groups/:id', async (req, res) => {
+groupRouter.get('/groups/:id', authenticationFunction, async (req, res) => {
     const { id } = req.params;
     const group = await getGroupById(id);
     if(!group){
@@ -18,7 +19,7 @@ groupRouter.get('/groups/:id', async (req, res) => {
     res.json(group);
 });
 
-groupRouter.post('/groups', async (req, res) => {
+groupRouter.post('/groups', authenticationFunction, async (req, res) => {
     const groupBody = req.body;
     const createdGroup = await createGroup(groupBody);
     if(!createdGroup){
@@ -27,7 +28,7 @@ groupRouter.post('/groups', async (req, res) => {
     res.json(createdGroup);
 });
 
-groupRouter.patch('/groups/:id', async (req, res) => {
+groupRouter.patch('/groups/:id', authenticationFunction, async (req, res) => {
     const { id } = req.params;
     const updatedValues = req.body;
     const groupUpdated = await updateGroupById(id, updatedValues);
@@ -37,7 +38,7 @@ groupRouter.patch('/groups/:id', async (req, res) => {
     res.status(400).json({message: 'Something went wrong'});
 });
 
-groupRouter.delete('/groups/:id', async (req, res) => {
+groupRouter.delete('/groups/:id', authenticationFunction, async (req, res) => {
     const { id } = req.params;
     await deleteUserGroupsByGroupId(id);
     const groupDeleted = await deleteGroupById(id);
