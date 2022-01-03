@@ -14,7 +14,7 @@ const port = process.env.PORT;
 
 app.use(expressWinston.logger({ winstonInstance }));
 app.use(express.json());
-app.use(cors());
+app.use(cors({origin: '*'}));
 app.use(loginRouter);
 app.use(userRouter);
 app.use(groupRouter);
@@ -27,4 +27,4 @@ process.on('unhandledRejection', error => {
   process.exit(1);
 });
 
-app.listen(port, () => winstonInstance.info(`Server is listening on port ${port}`));
+app.listen(port, () => winstonInstance.info(`🚀 Server is listening on http://localhost:${port}`));
