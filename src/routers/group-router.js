@@ -6,44 +6,32 @@ import { authenticationFunction } from '../helpers/authentication.js';
 export const groupRouter = express.Router();
 
 groupRouter.get('/groups', authenticationFunction, async (req, res) => {
-    const groups = await getAllGroups();
+    const groups = await getAllGroups(res);
     res.json(groups);
 });
 
 groupRouter.get('/groups/:id', authenticationFunction, async (req, res) => {
     const { id } = req.params;
-    const group = await getGroupById(id);
-    if(!group){
-        res.status(404).json({message: 'Group not found'});
-    }
+    const group = await getGroupById(id, res);
     res.json(group);
 });
 
 groupRouter.post('/groups', authenticationFunction, async (req, res) => {
     const groupBody = req.body;
-    const createdGroup = await createGroup(groupBody);
-    if(!createdGroup){
-        res.status(400).json({message: 'Something went wrong'});
-    }
+    const createdGroup = await createGroup(groupBody, res);
     res.json(createdGroup);
 });
 
 groupRouter.patch('/groups/:id', authenticationFunction, async (req, res) => {
     const { id } = req.params;
     const updatedValues = req.body;
-    const groupUpdated = await updateGroupById(id, updatedValues);
-    if(groupUpdated == 1) {
-        res.status(200).json({message: 'Group was updated'});
-    }
-    res.status(400).json({message: 'Something went wrong'});
+    await updateGroupById(id, updatedValues, res);
+    res.status(200).json({message: 'Group was updated'});
 });
 
 groupRouter.delete('/groups/:id', authenticationFunction, async (req, res) => {
     const { id } = req.params;
-    await deleteUserGroupsByGroupId(id);
-    const groupDeleted = await deleteGroupById(id);
-    if(groupDeleted == 1) {
-        res.status(200).json({message: 'Group was deleted'});
-    }
-    res.status(404).json({message: 'Group not found'});
+    await deleteUserGroupsByGroupId(id, res);
+    await deleteGroupById(id, res);
+    res.status(200).json({message: 'Group was deleted'});
 });

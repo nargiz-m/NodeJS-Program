@@ -6,14 +6,11 @@ export const userGroupRouter = express.Router();
 
 userGroupRouter.get('/usergroups', authenticationFunction, async (req, res) => {
     const userGroups = await getAllUserGroups();
-    res.json(userGroups);
+    res.json(userGroups, res);
 });
 
 userGroupRouter.post('/usergroups', authenticationFunction, async (req, res) => {
     const entityIds = req.body;
     const userGroups = await addUsersToGroup(entityIds.groupId, entityIds.userIds);
-    if(!userGroups) {
-        res.status(400).json({message: 'Bad request'});
-    }
-    res.json(userGroups);
+    res.json(userGroups, res);
 });
