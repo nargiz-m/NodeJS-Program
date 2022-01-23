@@ -1,22 +1,19 @@
 import request from "supertest";
-import { groupRouter } from '../group-router.js';
-import regeneratorRuntime from "regenerator-runtime";
+import { app } from "../../app.js";
 
-jest.mock('../../services/GroupService.js', () => ({
-    getAllGroups: jest.fn(),
-}));
-jest.mock('../../services/UserGroupService.js', () => ({
-    getAllUserGroups: jest.fn(),
-}));
 jest.mock('../../helpers/authentication.js', () => ({
-    authenticationFunction: jest.fn()
+    authenticationFunction: jest.fn((req, res, next) => next())
 }));
 
 describe('Group router tests', () => {
-    describe('GET /groups request', () => {
+    describe('Group router unit tests', () => {
         it('Getting all groups by GET /groups', async () => {
-            const response = await request(groupRouter).get('/groups');
+            const response = await request(app).get('/groups');
             expect(response.statusCode).toBe(200);
-        })
-    })
-})
+        });
+        it('Getting group by id by GET /groups/ID', async () => {
+            const response = await request(app).get('/groups/2');
+            expect(response.statusCode).toBe(200);
+        });
+    });
+});

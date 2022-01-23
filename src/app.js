@@ -9,7 +9,7 @@ import { userGroupRouter } from "./routers/usergroup-router.js";
 import { winstonInstance } from "./helpers/winston-logger.js";
 
 dotenv.config();
-const app = express();
+export const app = express();
 const port = process.env.PORT;
 
 app.use(expressWinston.logger({ winstonInstance }));
@@ -27,4 +27,6 @@ process.on('unhandledRejection', error => {
   process.exit(1);
 });
 
-app.listen(port, () => winstonInstance.info(`🚀 Server is listening on http://localhost:${port}`));
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => winstonInstance.info(`🚀 Server is listening on http://localhost:${port}`));
+}
