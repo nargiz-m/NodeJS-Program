@@ -8,11 +8,17 @@ jest.mock('../../helpers/authentication.js', () => ({
 jest.mock('../../models/Group.js', () => () => {
     const SequelizeMock = require("sequelize-mock");
     const dbMock = new SequelizeMock();
-    return dbMock.define('group',  [{
+    const Group = dbMock.define('group',  [{
         id: 1,
         name: 'xyzabccom',
         permissions: ['READ']
-    }])
+    },{
+        id: 2,
+        name: 'testGroup2',
+        permissions: ['READ', 'WRITE']
+    }]);
+    Group.findByPk = (groupId) => Group.findOne({where: {id:groupId}});
+    return Group;
 });
 
 describe('Group router tests', () => {
@@ -22,8 +28,8 @@ describe('Group router tests', () => {
             expect(response.statusCode).toBe(200);
         });
         it('Getting group by id by GET /groups/ID', async () => {
-            // const response = await request(app).get('/groups/2');
-            // expect(response.statusCode).toBe(200);
+            const response = await request(app).get('/groups/2');
+            expect(response.statusCode).toBe(200);
         });
     });
 });

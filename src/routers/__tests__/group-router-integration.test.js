@@ -4,11 +4,17 @@ import { app } from "../../app.js";
 jest.mock('../../models/Group.js', () => () => {
     const SequelizeMock = require("sequelize-mock");
     const dbMock = new SequelizeMock();
-    return dbMock.define('group',  [{
+    const Group = dbMock.define('group',  [{
         id: 1,
         name: 'xyzabccom',
         permissions: ['READ']
-    }])
+    },{
+        id: 2,
+        name: 'testGroup2',
+        permissions: ['READ', 'WRITE']
+    }]);
+    Group.findByPk = (groupId) => Group.findOne({where: {id:groupId}});
+    return Group;
 });
 
 describe('Group router integration tests', () => {
@@ -23,9 +29,9 @@ describe('Group router integration tests', () => {
         }).set('authorization', `Bearer ${loginResponse.body.accessToken}`);
         expect(groupPosted.statusCode).toBe(200);
 
-        // const groupRequested = await request(app).get(`/groups/${groupPosted.body.id}`)
-        //     .set('authorization', `Bearer ${loginResponse.body.accessToken}`);
-        // expect(groupRequested.statusCode).toBe(200);
+        const groupRequested = await request(app).get(`/groups/${groupPosted.body.id}`)
+            .set('authorization', `Bearer ${loginResponse.body.accessToken}`);
+        expect(groupRequested.statusCode).toBe(200);
         // expect(groupRequested.body.name).toBe("testGroup");
 
         const groupDeleted = await request(app).delete(`/groups/${groupPosted.body.id}`)
