@@ -1,6 +1,8 @@
-import { Group } from "../models/Group.js";
+import groupDefinition from "../models/Group.js";
 import { winstonInstance } from "../helpers/winston-logger.js";
 import { errorHandlerMiddleware } from "../helpers/error-handler.js";
+
+const Group = groupDefinition();
 
 export const getAllGroups = async (res) => {
     try {

@@ -1,4 +1,4 @@
-import { UserGroup } from "../models/UserGroup.js";
+import userGroupDefinition from "../models/UserGroup.js";
 import dotenv from "dotenv";
 import { Sequelize } from "sequelize";
 import { winstonInstance } from '../helpers/winston-logger.js'
@@ -6,6 +6,7 @@ import { errorHandlerMiddleware } from "../helpers/error-handler.js";
 
 dotenv.config();
 const sequelize = new Sequelize(process.env.CONNECTION_URL);
+const UserGroup = userGroupDefinition();
 
 export const getAllUserGroups = async (res) => {
     try {
